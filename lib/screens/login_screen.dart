@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_app/controllers/userAuthController.dart';
+import 'package:messenger_app/controllers/user_auth_controller.dart';
+import 'package:messenger_app/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final UserAuthController _loginController = UserAuthController();
+  final UserAuthController _userController = UserAuthController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("LOGIN"),
-            _buildInputField(_usernameController),
-            _buildInputField(_passwordController),
+            _buildInputField(_usernameController, false),
+            _buildInputField(_passwordController, true),
             _registerBtn(),
             _loginBtn(),
           ],
@@ -32,9 +33,18 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildInputField(TextEditingController controller) {
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _passwordController.dispose();
+    _usernameController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildInputField(TextEditingController controller, bool isPassword) {
     return TextFormField(
       controller: controller,
+      obscureText: isPassword,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.only(left: 20),
         border: OutlineInputBorder(
@@ -50,18 +60,13 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () {
         String email = _usernameController.text;
         String password = _passwordController.text;
-        bool isLogin = _loginController.loginWithEmailAndPassword(email, password);
-
-        if (isLogin) {
-          setState(() {
-            Navigator.pushReplacementNamed(context, '/home');
-          });
-        } else {
-          print('khong the dang nhap');
+        bool isLogin = _userController.login(email, password);
+        if(!isLogin) {
+          print('khong the dan nhap');
         }
       },
       icon: Icon(
-        Icons.near_me,
+        Icons.login,
         size: 30,
       ),
     );
@@ -71,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return IconButton(
       onPressed: () {
         setState(() {
-          Navigator.pushNamed(context, '/register');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
         });
       },
       icon: Icon(Icons.add),

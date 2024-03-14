@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:messenger_app/screens/home_screen.dart';
 import 'package:messenger_app/screens/login_screen.dart';
 import 'package:messenger_app/screens/register_screen.dart';
+import 'package:messenger_app/services/auth/auth_gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,12 +31,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginScreen(),
-        '/register':(context) => RegisterScreen(),
-        '/home': (context) => HomeScreen(),
-      },
+      home: AuthGate(),
     );
   }
 }
