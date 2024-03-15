@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Text("home page"),
+      body: _buildUserList(),
     );
   }
 
@@ -42,6 +43,40 @@ class _HomeScreenState extends State<HomeScreen> {
         labelText: 'Nhap',
       ),
     );
+  }
+
+  Widget _buildUserList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('users').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Text("Error");
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading...');
+        }
+
+        return ListView(
+          children: snapshot.data!.docs
+              .map<Widget>((doc) => _buildUserItem(doc))
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildUserItem(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+
+    if (_homeController.getAuthInstance().currentUser!.email != data['name']) {
+      return ListTile(
+        title: Text('${data['name']}'),
+        onTap: () {
+          print('taped');
+        },
+      );
+    }
+    return Container();
   }
 
   void _signOut() {

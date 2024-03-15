@@ -1,15 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:messenger_app/services/auth/user_auth_service.dart';
 
 class HomeController {
-  final UserAuthService _service = UserAuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  FirebaseAuth getAuthInstance() {
+    return _auth;
+  }
 
   void signOut() {
-    _service.signOut();
+    _auth.signOut();
   }
 
   String? getUserName() {
-    return FirebaseAuth.instance.currentUser?.email;
+    return _auth.currentUser?.email;
   }
 
 }
