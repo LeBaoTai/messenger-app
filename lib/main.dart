@@ -1,8 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_app/screens/home_screen.dart';
-import 'package:messenger_app/screens/login_screen.dart';
-import 'package:messenger_app/screens/register_screen.dart';
 import 'package:messenger_app/services/auth/auth_gate.dart';
 
 void main() async {

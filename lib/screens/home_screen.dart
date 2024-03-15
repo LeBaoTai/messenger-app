@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:messenger_app/controllers/home_controller.dart';
+import 'package:messenger_app/screens/chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,9 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (_homeController.getAuthInstance().currentUser!.email != data['name']) {
       return ListTile(
-        title: Text('${data['name']}'),
+        title: Text(data['name']),
         onTap: () {
-          print('taped');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(receiverEmail: data['name'].toString(), receiverId: data['uuid'],),
+            ),
+          );
         },
       );
     }

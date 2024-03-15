@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class UserAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -12,6 +11,7 @@ class UserAuthService {
 
       _fireStore.collection('users').doc(credential.user?.uid).set({
         'name': credential.user?.email,
+        'uuid': credential.user?.uid,
       }, SetOptions(merge: true));
 
       return credential;
@@ -26,6 +26,7 @@ class UserAuthService {
 
       _fireStore.collection('users').doc(credential.user?.uid).set({
         'name': credential.user?.email,
+        'uuid': credential.user?.uid,
       });
 
       return credential.user;
