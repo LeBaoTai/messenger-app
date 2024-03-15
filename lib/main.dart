@@ -12,12 +12,10 @@ void main() async {
         apiKey: 'AIzaSyC6qB8YbUoTTSxso9HjW1CZiqcOpHYEQ14',
         appId: '1:1023739173542:android:38ce7048a85c6cefa47267',
         messagingSenderId: '1023739173542',
-        projectId: 'messenger-7a021'
-    ),
+        projectId: 'messenger-7a021'),
   );
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -29,7 +27,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: AuthGate(),
     );
