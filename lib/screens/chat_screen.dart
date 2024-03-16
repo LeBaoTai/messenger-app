@@ -1,6 +1,7 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_app/services/chat/chat_services.dart';
 
@@ -20,7 +21,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +75,19 @@ class _ChatScreenState extends State<ChatScreen> {
         : Alignment.centerLeft;
 
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
+      margin: const EdgeInsets.all(15),
       alignment: alignment,
+      decoration: BoxDecoration(
+        color: Colors.green,
+      ),
       child: Column(
+        crossAxisAlignment: data['senderId'] == _auth.currentUser!.uid
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Text(data['senderEmail']),
-          Text(data['message']),
+          Text(data['message'], style: TextStyle(fontSize: 18),),
         ],
       ),
     );
@@ -89,22 +96,41 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildMessageInput() {
     return Row(
       children: [
+        _renderSpace(),
+        IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.menu_rounded,
+              size: 30,
+            )),
         Expanded(
           child: TextFormField(
             controller: _messagesController,
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(20),
               ),
               hintText: 'Input',
             ),
           ),
         ),
-        ElevatedButton(
-          onPressed: _sendMessage,
-          child: const Icon(Icons.send),
-        )
+        IconButton(
+          onPressed: () {
+            _sendMessage();
+          },
+          icon: const Icon(
+            Icons.send,
+            size: 30,
+          ),
+        ),
+        _renderSpace(),
       ],
+    );
+  }
+
+  Widget _renderSpace() {
+    return const SizedBox(
+      width: 15,
     );
   }
 }
