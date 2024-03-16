@@ -18,13 +18,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          padding: const EdgeInsets.only(left: 25, right: 25),
           children: [
-            Text("REGISTER"),
-            _buildInputField(_usernameController, false),
-            _buildInputField(_passwordController, true),
+            Image.asset('assets/login/register_banner.jpg'),
+            _renderSizeBox(),
+            _buildInputField(_usernameController, false, 'Email'),
+            _renderSizeBox(),
+            _buildInputField(_passwordController, true, 'Password'),
+            _renderSizeBox(),
             _registerBtn(),
+            _renderSizeBox(),
             _backToLoginBtn(),
           ],
         ),
@@ -40,16 +44,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Widget _buildInputField(TextEditingController controller, bool isPassword) {
+  Widget _buildInputField(TextEditingController controller, bool isPassword, String labelText) {
     return TextFormField(
       controller: controller,
       obscureText: isPassword,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 20),
+        contentPadding: const EdgeInsets.only(left: 20),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(30),
         ),
-        labelText: 'Input',
+        labelText: labelText,
       ),
     );
   }
@@ -62,10 +66,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         bool isRegister = _userController.register(email, password);
         if (!isRegister) {
-          print('kh the tao tai khong');
+          print('kh the tao tai');
         }
       },
-      icon: Icon(Icons.near_me),
+      icon: const Icon(Icons.near_me),
     );
   }
 
@@ -76,7 +80,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Navigator.pop(context);
         });
       },
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
+    );
+  }
+
+  Widget _renderSizeBox() {
+    return const SizedBox(
+      height: 20,
     );
   }
 }
