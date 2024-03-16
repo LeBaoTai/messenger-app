@@ -19,13 +19,17 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          padding: const EdgeInsets.only(right: 25, left: 25),
           children: [
-            Text("LOGIN"),
-            _buildInputField(_usernameController, false),
-            _buildInputField(_passwordController, true),
-            _registerBtn(),
+            Image.asset('assets/login/login_banner.jpg'),
+            _renderSizeBox(),
+            _buildInputField(_usernameController, false, 'Email'),
+            _renderSizeBox(),
+            _buildInputField(_passwordController, true, 'Password'),
+            _renderSizeBox(),
+            _register(),
+            _renderSizeBox(),
             _loginBtn(),
           ],
         ),
@@ -41,16 +45,17 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Widget _buildInputField(TextEditingController controller, bool isPassword) {
+  Widget _buildInputField(
+      TextEditingController controller, bool isPassword, String labelText) {
     return TextFormField(
       controller: controller,
       obscureText: isPassword,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 20),
+        contentPadding: const EdgeInsets.only(left: 20),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(30),
         ),
-        labelText: 'Input',
+        labelText: labelText,
       ),
     );
   }
@@ -61,25 +66,43 @@ class _LoginScreenState extends State<LoginScreen> {
         String email = _usernameController.text;
         String password = _passwordController.text;
         bool isLogin = _userController.login(email, password);
-        if(!isLogin) {
+        if (!isLogin) {
           print('khong the dan nhap');
         }
       },
-      icon: Icon(
-        Icons.login,
-        size: 30,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
       ),
+      icon: const Icon(Icons.login),
     );
   }
 
-  Widget _registerBtn() {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
-        });
-      },
-      icon: Icon(Icons.add),
+  Widget _register() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          "Create Account?",
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+          },
+          child: const Text(
+            "Click Here",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _renderSizeBox() {
+    return const SizedBox(
+      height: 20,
     );
   }
 }
