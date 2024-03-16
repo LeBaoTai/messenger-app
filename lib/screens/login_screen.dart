@@ -15,23 +15,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final UserAuthController _userController = UserAuthController();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ListView(
-          padding: const EdgeInsets.only(right: 25, left: 25),
-          children: [
-            Image.asset('assets/login/login_banner.jpg'),
-            _renderSizeBox(),
-            _buildInputField(_usernameController, false, 'Email'),
-            _renderSizeBox(),
-            _buildInputField(_passwordController, true, 'Password'),
-            _renderSizeBox(),
-            _register(),
-            _renderSizeBox(),
-            _loginBtn(),
-          ],
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.only(right: 25, left: 25),
+            children: [
+              Image.asset('assets/login/login_banner.jpg'),
+              _renderSizeBox(),
+              _buildInputField(_usernameController, false, 'Email'),
+              _renderSizeBox(),
+              _buildInputField(_passwordController, true, 'Password'),
+              _renderSizeBox(),
+              _register(),
+              _renderSizeBox(),
+              _loginBtn(),
+            ],
+          ),
         ),
       ),
     );
@@ -48,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildInputField(
       TextEditingController controller, bool isPassword, String labelText) {
     return TextFormField(
+      validator: (text) => text!.isEmpty ? "Empty" : null,
       controller: controller,
       obscureText: isPassword,
       decoration: InputDecoration(
@@ -66,7 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
         String email = _usernameController.text;
         String password = _passwordController.text;
         bool isLogin = _userController.login(email, password);
-        if (!isLogin) {
+        bool validate = _formKey.currentState!.validate();
+
+        if (!isLogin && !validate) {
           print('khong the dan nhap');
         }
       },
