@@ -16,6 +16,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  bool _isShowPassword = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +29,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               Image.asset('assets/login/register_banner.jpg'),
               _renderSizeBox(),
-              _buildInputField(_usernameController, false, 'Email'),
+              _buildEmailInputField(_usernameController, 'Email'),
               _renderSizeBox(),
-              _buildInputField(_passwordController, true, 'Password'),
+              _buildPasswordInputField(_passwordController, 'Password'),
               _renderSizeBox(),
               _registerBtn(),
               _renderSizeBox(),
@@ -49,13 +51,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Widget _buildInputField(TextEditingController controller, bool isPassword, String labelText) {
+  Widget _buildEmailInputField(TextEditingController controller, String labelText) {
     return TextFormField(
       validator: (text) => text!.isEmpty ? "Không được để trống" : null,
       controller: controller,
-      obscureText: isPassword,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(left: 20),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        labelText: labelText,
+      ),
+    );
+  }
+
+  Widget _buildPasswordInputField(TextEditingController controller, String labelText) {
+    return TextFormField(
+      validator: (text) => text!.isEmpty ? "Không được để trống" : null,
+      controller: controller,
+      obscureText: !_isShowPassword,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.only(left: 20),
+        suffixIcon: IconButton(
+          onPressed: (){
+            setState(() {
+              _isShowPassword = !_isShowPassword;
+            });
+          },
+          icon: _isShowPassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
