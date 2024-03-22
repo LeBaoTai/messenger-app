@@ -25,24 +25,14 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: _signOut,
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           )
         ],
+        backgroundColor: Colors.white,
+        elevation: 4,
+        shadowColor: Colors.black,
       ),
       body: _buildUserList(),
-    );
-  }
-
-  Widget _buildInputField() {
-    return TextFormField(
-      controller: _inputMessageController,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(left: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        labelText: 'Nhap',
-      ),
     );
   }
 
@@ -70,16 +60,34 @@ class _HomeScreenState extends State<HomeScreen> {
     Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
 
     if (_homeController.getAuthInstance().currentUser!.email != data['name']) {
-      return ListTile(
-        title: Text(data['name']),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(receiverEmail: data['name'].toString(), receiverId: data['uuid'],),
+      return Container(
+        margin: const EdgeInsets.only(top: 5, bottom: 5),
+        child: ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              'assets/home/user.png',
+              width: 35,
+              height: 35,
             ),
-          );
-        },
+          ),
+          trailing: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.more_vert),
+          ),
+          title: Text(data['name']),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatScreen(
+                  receiverEmail: data['name'].toString(),
+                  receiverId: data['uuid'],
+                ),
+              ),
+            );
+          },
+        ),
       );
     }
     return Container();
@@ -88,4 +96,5 @@ class _HomeScreenState extends State<HomeScreen> {
   void _signOut() {
     _homeController.signOut();
   }
+
 }
