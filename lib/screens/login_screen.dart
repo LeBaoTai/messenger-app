@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _isShowPassword = !_isShowPassword;
             });
           },
-          icon: _isShowPassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility)
+          icon: _isShowPassword ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off)
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),

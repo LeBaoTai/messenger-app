@@ -11,6 +11,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _rePasswordController = TextEditingController();
 
   final UserAuthController _userController = UserAuthController();
 
@@ -78,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               _isShowPassword = !_isShowPassword;
             });
           },
-          icon: _isShowPassword ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+          icon: _isShowPassword ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
