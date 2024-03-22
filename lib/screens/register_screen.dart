@@ -34,6 +34,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               _renderSizeBox(),
               _buildPasswordInputField(_passwordController, 'Password'),
               _renderSizeBox(),
+              _buildPasswordInputField(_rePasswordController, 'Repeat Password'),
+              _renderSizeBox(),
               _registerBtn(),
               _renderSizeBox(),
               _backToLoginBtn(),
@@ -54,7 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildEmailInputField(TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? "Không được để trống" : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : null,
       controller: controller,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(left: 20),
@@ -68,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildPasswordInputField(TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? "Không được để trống" : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : null,
       controller: controller,
       obscureText: !_isShowPassword,
       decoration: InputDecoration(

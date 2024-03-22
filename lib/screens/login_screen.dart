@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildEmailInputField(
       TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? "Empty" : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : null,
       controller: controller,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(left: 20),
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildPasswordInputField(
       TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? "Empty" : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : null,
       controller: controller,
       obscureText: !_isShowPassword,
       decoration: InputDecoration(
