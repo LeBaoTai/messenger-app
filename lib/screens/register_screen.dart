@@ -9,7 +9,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _rePasswordController = TextEditingController();
 
@@ -30,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               Image.asset('assets/login/register_banner.jpg'),
               _renderSizeBox(),
-              _buildEmailInputField(_usernameController, 'Email'),
+              _buildEmailInputField(_emailController, 'Email'),
               _renderSizeBox(),
               _buildPasswordInputField(_passwordController, 'Password'),
               _renderSizeBox(),
@@ -49,14 +49,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     // TODO: implement dispose
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  _checkMatchPassword() {
+    String password = _passwordController.text;
+    String rePassword = _rePasswordController.text;
+
+    if (password != rePassword) {
+      return 'Password doesn\'t macth!';
+    }
+    return null;
+  }
+
+  _checkValidEmail() {
+    String email = _emailController.text;
+    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email) ? null : "Email not valid!";
+  }
+
   Widget _buildEmailInputField(TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? 'Empty!' : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : _checkValidEmail(),
       controller: controller,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(left: 20),
@@ -70,7 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildPasswordInputField(TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? 'Empty!' : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : _checkMatchPassword(),
       controller: controller,
       obscureText: !_isShowPassword,
       decoration: InputDecoration(
@@ -94,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _registerBtn() {
     return IconButton(
       onPressed: () {
-        String email = _usernameController.text;
+        String email = _emailController.text;
         String password = _passwordController.text;
 
         bool validate = _formKey.currentState!.validate();
