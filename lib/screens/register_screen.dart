@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_app/controllers/user_auth_controller.dart';
+import 'package:messenger_app/services/auth/user_auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,8 +13,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _rePasswordController = TextEditingController();
 
-  final UserAuthController _userController = UserAuthController();
-
+  final UserAuthService _authService = UserAuthService();
+  
   final _formKey = GlobalKey<FormState>();
 
   bool _isShowPassword = false;
@@ -114,14 +114,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         bool validate = _formKey.currentState!.validate();
 
-        bool isRegister = _userController.register(email, password);
-        if (!isRegister) {
-          if(!validate) {
-            print('kh the tao acc');
-          }
+        if (validate) {
+          _authService.signUpWithEmailAndPassword(email, password).then((value) {
+            final snackBar = SnackBar(
+              content: Text(value),
+              action: SnackBarAction(
+                label: 'Close',
+                onPressed: () {
+                  if (value == 'Success') {
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          });
         }
       },
-      icon: const Icon(Icons.near_me),
+      icon: const Icon(Icons.app_registration_rounded),
     );
   }
 

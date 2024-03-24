@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_app/controllers/user_auth_controller.dart';
 import 'package:messenger_app/screens/register_screen.dart';
+import 'package:messenger_app/services/auth/user_auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final UserAuthController _userController = UserAuthController();
+  final UserAuthService _authService = UserAuthService();
 
   final _formKey = GlobalKey<FormState>();
   bool _isShowPassword = false;
@@ -105,11 +105,20 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () {
         String email = _emailController.text;
         String password = _passwordController.text;
-        bool isLogin = _userController.login(email, password);
         bool validate = _formKey.currentState!.validate();
 
-        if (!isLogin && !validate) {
-          print('khong the dan nhap');
+        if (validate) {
+          // _authService.signInWithEmailAndPassword(email, password).then((value) {
+          //   final snackBar = SnackBar(
+          //     content: Text(value),
+          //     action: SnackBarAction(
+          //       label: 'Close',
+          //       onPressed: () {
+          //       },
+          //     ),
+          //   );
+          //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          // });
         }
       },
       style: ButtonStyle(

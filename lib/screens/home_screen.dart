@@ -1,30 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:messenger_app/controllers/home_controller.dart';
 import 'package:messenger_app/screens/chat_screen.dart';
+import 'package:messenger_app/services/auth/user_auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({Key? key, required this.user}) : super(key: key);
+  final User user;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _inputMessageController = TextEditingController();
-
-  final HomeController _homeController = HomeController();
+  final UserAuthService _authService = UserAuthService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_homeController.getUserName()!),
+        title: Text(widget.user.email!),
         actions: [
           IconButton(
-            onPressed: _signOut,
+            onPressed: () => _authService.signOut(),
             icon: const Icon(Icons.logout),
           )
         ],
@@ -59,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildUserItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
 
-    if (_homeController.getAuthInstance().currentUser!.email != data['name']) {
+    if (widget.user.email != data['name']) {
       return Container(
         margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: ListTile(
@@ -92,9 +90,4 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Container();
   }
-
-  void _signOut() {
-    _homeController.signOut();
-  }
-
 }
