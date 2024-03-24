@@ -10,7 +10,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final UserAuthController _userController = UserAuthController();
@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Image.asset('assets/login/login_banner.jpg'),
               _renderSizeBox(),
-              _buildEmailInputField(_usernameController, 'Email'),
+              _buildEmailInputField(_emailController, 'Email'),
               _renderSizeBox(),
               _buildPasswordInputField(_passwordController, 'Password'),
               _renderSizeBox(),
@@ -47,14 +47,23 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     // TODO: implement dispose
     _passwordController.dispose();
-    _usernameController.dispose();
+    _emailController.dispose();
     super.dispose();
+  }
+
+  _checkValidEmail() {
+    String email = _emailController.text;
+    return RegExp(
+                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(email)
+        ? null
+        : "Email not valid!";
   }
 
   Widget _buildEmailInputField(
       TextEditingController controller, String labelText) {
     return TextFormField(
-      validator: (text) => text!.isEmpty ? 'Empty!' : null,
+      validator: (text) => text!.isEmpty ? 'Empty!' : _checkValidEmail(),
       controller: controller,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(left: 20),
@@ -75,13 +84,14 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(left: 20),
         suffixIcon: IconButton(
-          onPressed: (){
-            setState(() {
-              _isShowPassword = !_isShowPassword;
-            });
-          },
-          icon: _isShowPassword ? const Icon(Icons.visibility) : const Icon(Icons.visibility_off)
-        ),
+            onPressed: () {
+              setState(() {
+                _isShowPassword = !_isShowPassword;
+              });
+            },
+            icon: _isShowPassword
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_off)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
         ),
@@ -93,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _loginBtn() {
     return IconButton(
       onPressed: () {
-        String email = _usernameController.text;
+        String email = _emailController.text;
         String password = _passwordController.text;
         bool isLogin = _userController.login(email, password);
         bool validate = _formKey.currentState!.validate();
