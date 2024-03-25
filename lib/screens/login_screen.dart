@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_app/screens/register_screen.dart';
 import 'package:messenger_app/services/auth/user_auth_service.dart';
@@ -53,11 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _checkValidEmail() {
     String email = _emailController.text;
-    return RegExp(
-                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-            .hasMatch(email)
-        ? null
-        : "Email not valid!";
+    return EmailValidator.validate(email) ? null : 'Email is not valid.';
   }
 
   Widget _buildEmailInputField(
@@ -108,17 +105,17 @@ class _LoginScreenState extends State<LoginScreen> {
         bool validate = _formKey.currentState!.validate();
 
         if (validate) {
-          // _authService.signInWithEmailAndPassword(email, password).then((value) {
-          //   final snackBar = SnackBar(
-          //     content: Text(value),
-          //     action: SnackBarAction(
-          //       label: 'Close',
-          //       onPressed: () {
-          //       },
-          //     ),
-          //   );
-          //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          // });
+          _authService.signInWithEmailAndPassword(email, password).then((value) {
+            final snackBar = SnackBar(
+              content: Text(value),
+              action: SnackBarAction(
+                label: 'Close',
+                onPressed: () {
+                },
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          });
         }
       },
       style: ButtonStyle(

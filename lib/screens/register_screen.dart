@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_app/services/auth/user_auth_service.dart';
 
@@ -14,7 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _rePasswordController = TextEditingController();
 
   final UserAuthService _authService = UserAuthService();
-  
+
   final _formKey = GlobalKey<FormState>();
 
   bool _isShowPassword = false;
@@ -66,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   _checkValidEmail() {
     String email = _emailController.text;
-    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email) ? null : "Email not valid!";
+    return EmailValidator.validate(email) ? null : 'Email is not valid.';
   }
 
   Widget _buildEmailInputField(TextEditingController controller, String labelText) {
