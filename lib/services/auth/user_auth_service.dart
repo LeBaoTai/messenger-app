@@ -14,7 +14,7 @@ class UserAuthService {
         'uuid': credential.user?.uid,
       }, SetOptions(merge: true));
       
-      return 'Success';
+      return 'Success.';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return 'User not found!';

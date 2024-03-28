@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final UserAuthService _authService = UserAuthService();
 
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isShowPassword = false;
 
   @override
@@ -107,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (validate) {
           _authService.signInWithEmailAndPassword(email, password).then((value) {
             final snackBar = SnackBar(
-              content: Text(value),
+              content: Text(value ?? 'Wrong email or password.'),
               action: SnackBarAction(
                 label: 'Close',
                 onPressed: () {
