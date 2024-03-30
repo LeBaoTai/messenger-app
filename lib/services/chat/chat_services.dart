@@ -12,7 +12,7 @@ class ChatService {
     final String currentUserEmail = _auth.currentUser!.email.toString();
     final Timestamp timestamp = Timestamp.now();
 
-    Message newMessage = Message(
+    MessageModel newMessage = MessageModel(
         senderId: currentUserId,
         receiverId: receiverId,
         senderEmail: currentUserEmail,

@@ -10,6 +10,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _rePasswordController = TextEditingController();
@@ -30,6 +31,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             padding: const EdgeInsets.only(left: 25, right: 25),
             children: [
               Image.asset('assets/login/register_banner.jpg'),
+              _renderSizeBox(),
+              _buildUserNameInputField(_userNameController, 'Username'),
               _renderSizeBox(),
               _buildEmailInputField(_emailController, 'Email'),
               _renderSizeBox(),
@@ -68,6 +71,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   _checkValidEmail() {
     String email = _emailController.text;
     return EmailValidator.validate(email) ? null : 'Email is not valid.';
+  }
+
+
+  Widget _buildUserNameInputField(TextEditingController controller, String labelText) {
+    return TextFormField(
+      validator: (text) => text!.isEmpty ? 'Empty!' : null,
+      controller: controller,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.only(left: 20),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        labelText: labelText,
+      ),
+    );
   }
 
   Widget _buildEmailInputField(TextEditingController controller, String labelText) {
@@ -110,19 +128,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _registerBtn() {
     return IconButton(
       onPressed: () {
+        String username = _userNameController.text;
         String email = _emailController.text;
         String password = _passwordController.text;
 
         bool validate = _formKey.currentState!.validate();
 
         if (validate) {
-          _authService.signUpWithEmailAndPassword(email, password).then((value) {
+          _authService.signUpWithEmailAndPassword(email, password, username).then((value) {
             final snackBar = SnackBar(
               content: Text(value),
               action: SnackBarAction(
                 label: 'Close',
                 onPressed: () {
-                  if (value == 'Success') {
+                  if (value == 'Success.') {
                     Navigator.pop(context);
                   }
                 },

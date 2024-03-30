@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_app/models/user.dart';
 import 'package:messenger_app/screens/chat_screen.dart';
+import 'package:messenger_app/screens/search_screen.dart';
 import 'package:messenger_app/services/auth/user_auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,17 +16,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final UserAuthService _authService = UserAuthService();
+  final Stream<
+      QuerySnapshot<Map<String, dynamic>>> _firestoreStream = FirebaseFirestore
+      .instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.user.email!),
+        title: Text(widget.user.displayName ?? 'Null'),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()));
+            },
+            icon: const Icon(Icons.add_comment_outlined),
+          ),
           IconButton(
             onPressed: () => _authService.signOut(),
             icon: const Icon(Icons.logout),
-          )
+          ),
         ],
         backgroundColor: Colors.white,
         elevation: 4,
@@ -36,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
+      stream: _firestoreStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text("Error");
@@ -57,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildUserItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
 
-    if (widget.user.email != data['name']) {
+    if (widget.user.email != data['email']) {
       return Container(
         margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: ListTile(
@@ -73,15 +85,16 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {},
             icon: const Icon(Icons.more_vert),
           ),
-          title: Text(data['name']),
+          title: Text(data['username']),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatScreen(
-                  receiverEmail: data['name'].toString(),
-                  receiverId: data['uuid'],
-                ),
+                builder: (context) =>
+                    ChatScreen(
+                      receiverEmail: data['email'].toString(),
+                      receiverId: data['uuid'],
+                    ),
               ),
             );
           },

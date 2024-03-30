@@ -5,16 +5,15 @@ import 'package:messenger_app/screens/login_screen.dart';
 
 class AuthGate extends StatelessWidget {
   AuthGate({Key? key}) : super(key: key);
-  final _authState = FirebaseAuth.instance.authStateChanges();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-        stream: _authState,
-        builder: (context, snapshot) {
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           // user login
-          if(snapshot.hasData) {
+          if (snapshot.hasData) {
             return HomeScreen(user: snapshot.data!);
           }
           // user not login

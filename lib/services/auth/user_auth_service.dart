@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:messenger_app/models/user.dart';
 
 class UserAuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
   signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
 
-      _fireStore.collection('users').doc(credential.user?.uid).set({
-        'name': credential.user?.email,
+      FirebaseFirestore.instance.collection('users').doc(credential.user?.uid).set({
+        'username': credential.user?.displayName,
+        'email': credential.user?.email,
         'uuid': credential.user?.uid,
       }, SetOptions(merge: true));
       
@@ -24,15 +24,18 @@ class UserAuthService {
     }
   }
 
-  signUpWithEmailAndPassword(String email, String password) async {
+  signUpWithEmailAndPassword(String email, String password, String username) async {
     try {
-      UserCredential credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      _fireStore.collection('users').doc(credential.user?.uid).set({
-        'name': credential.user?.email,
-        'uuid': credential.user?.uid,
-      });
+      final signUpAuth = FirebaseAuth.instance;
+      UserCredential credential = await signUpAuth.createUserWithEmailAndPassword(email: email, password: password);
+      await credential.user!.updateDisplayName(username);
+      await credential.user!.reload();
+      await signUpAuth.signOut();
 
-      return 'Success';
+      UserModel newUser = UserModel(uuid: credential.user!.uid, username: username, email: email, friends: []);
+      FirebaseFirestore.instance.collection('users').doc(credential.user?.uid).set(newUser.toMap());
+
+      return 'Success.';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         return 'The account already exists for that email.';
@@ -41,6 +44,6 @@ class UserAuthService {
   }
 
   signOut() async {
-    return await _auth.signOut();
+    return await FirebaseAuth.instance.signOut();
   }
 }
