@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -10,29 +10,41 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  bool _isAddFriend = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add a new friend'),
+        title: const Text('Search'),
+        backgroundColor: Colors.white,
+        elevation: 4,
+        shadowColor: Colors.black,
+        actions: [
+          Text(
+            'Others',
+            style: TextStyle(
+              fontSize: 19,
+              color: _isAddFriend ? Colors.black : Colors.grey,
+            ),
+          ),
+          Switch(
+            value: _isAddFriend,
+            onChanged: _toggleAddFriend,
+            activeColor: Colors.black45,
+          ),
+        ],
       ),
-      body: _buildBodySearch(),
+      body: _buildBody(),
     );
   }
 
-  Widget _buildBodySearch() {
+  Widget _buildBody() {
     return ListView(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(15),
       children: [
         _buildSearchBar(),
         SizedBox.fromSize(size: const Size.fromHeight(30)),
-        Text('child'),
-        Text('child'),
-        Text('child'),
-        Text('child'),
-        Text('child'),
-        Text('child'),
       ],
     );
   }
@@ -41,16 +53,22 @@ class _SearchScreenState extends State<SearchScreen> {
     return TextFormField(
       controller: _searchController,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(10),
+        contentPadding: EdgeInsets.all(15),
         suffixIcon: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.search),
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(15),
         ),
         labelText: 'Search',
       ),
     );
+  }
+
+  void _toggleAddFriend(bool value) {
+    setState(() {
+      _isAddFriend = value;
+    });
   }
 }

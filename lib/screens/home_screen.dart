@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:messenger_app/models/user.dart';
 import 'package:messenger_app/screens/chat_screen.dart';
+import 'package:messenger_app/screens/groups_screen.dart';
+import 'package:messenger_app/screens/profile_screen.dart';
 import 'package:messenger_app/screens/search_screen.dart';
 import 'package:messenger_app/services/auth/user_auth_service.dart';
 
@@ -31,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SearchScreen()));
+                  MaterialPageRoute(builder: (context) => ProfileScreen()));
             },
-            icon: const Icon(Icons.add_comment_outlined),
+            icon: const Icon(Icons.info),
           ),
           IconButton(
             onPressed: () => _authService.signOut(),
@@ -45,16 +41,50 @@ class _HomeScreenState extends State<HomeScreen> {
         shadowColor: Colors.black,
       ),
       body: _buildUserList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.home,
+                size: 30,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SearchScreen()));
+              },
+              icon: Icon(
+                Icons.search,
+                size: 30,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => GroupsScreen()));
+              },
+              icon: Icon(
+                Icons.people,
+                size: 30,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildUserList() {
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').doc(widget.user.uid).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text("Error");
@@ -62,12 +92,12 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text('Loading...');
         }
-
-        final Map<String, dynamic> userData = snapshot.data?.data() as Map<String, dynamic>;
+        final Map<String, dynamic> userData =
+            snapshot.data?.data() as Map<String, dynamic>;
         final friendList = List.from(userData['listFriend']);
-
         return ListView(
-          children: friendList.map((friend) => _buildFriendItem(friend)).toList(),
+          children:
+              friendList.map((friend) => _buildFriendItem(friend)).toList(),
         );
       },
     );
@@ -94,11 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ChatScreen(
-                    receiverEmail: friend.email.toString(),
-                    receiverId: friend.uid,
-                  ),
+              builder: (context) => ChatScreen(
+                receiverEmail: friend.email.toString(),
+                receiverId: friend.uid,
+              ),
             ),
           );
         },
@@ -130,11 +159,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    ChatScreen(
-                      receiverEmail: data['email'].toString(),
-                      receiverId: data['uuid'],
-                    ),
+                builder: (context) => ChatScreen(
+                  receiverEmail: data['email'].toString(),
+                  receiverId: data['uuid'],
+                ),
               ),
             );
           },
