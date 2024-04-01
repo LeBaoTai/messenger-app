@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:messenger_app/models/user.dart';
 import 'package:messenger_app/screens/chat_screen.dart';
 import 'package:messenger_app/screens/search_screen.dart';
@@ -16,9 +21,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final UserAuthService _authService = UserAuthService();
-  final Stream<
-      QuerySnapshot<Map<String, dynamic>>> _firestoreStream = FirebaseFirestore
-      .instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +45,16 @@ class _HomeScreenState extends State<HomeScreen> {
         shadowColor: Colors.black,
       ),
       body: _buildUserList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
   Widget _buildUserList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _firestoreStream,
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance.collection('users').doc(widget.user.uid).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text("Error");
@@ -57,12 +63,46 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Text('Loading...');
         }
 
+        final Map<String, dynamic> userData = snapshot.data?.data() as Map<String, dynamic>;
+        final friendList = List.from(userData['listFriend']);
+
         return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserItem(doc))
-              .toList(),
+          children: friendList.map((friend) => _buildFriendItem(friend)).toList(),
         );
       },
+    );
+  }
+
+  Widget _buildFriendItem(User friend) {
+    return Container(
+      margin: const EdgeInsets.only(top: 5, bottom: 5),
+      child: ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Image.asset(
+            'assets/home/user.png',
+            width: 35,
+            height: 35,
+          ),
+        ),
+        trailing: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.more_vert),
+        ),
+        title: Text(friend.displayName!),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ChatScreen(
+                    receiverEmail: friend.email.toString(),
+                    receiverId: friend.uid,
+                  ),
+            ),
+          );
+        },
+      ),
     );
   }
 
