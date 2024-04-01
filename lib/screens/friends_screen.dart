@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class GroupsScreen extends StatefulWidget {
-  const GroupsScreen({super.key});
+class FriendsScreen extends StatefulWidget {
+  const FriendsScreen({super.key});
 
   @override
-  State<GroupsScreen> createState() => _GroupState();
+  State<FriendsScreen> createState() => _GroupState();
 }
 
-class _GroupState extends State<GroupsScreen> {
+class _GroupState extends State<FriendsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

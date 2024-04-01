@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_app/screens/chat_screen.dart';
-import 'package:messenger_app/screens/groups_screen.dart';
+import 'package:messenger_app/screens/friends_screen.dart';
 import 'package:messenger_app/screens/profile_screen.dart';
 import 'package:messenger_app/screens/search_screen.dart';
 import 'package:messenger_app/services/auth/user_auth_service.dart';
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => GroupsScreen()));
+                    MaterialPageRoute(builder: (context) => FriendsScreen()));
               },
               icon: Icon(
                 Icons.people,

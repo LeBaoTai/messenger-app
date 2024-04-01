@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   bool _isAddFriend = false;
+  String _input = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +30,14 @@ class _SearchScreenState extends State<SearchScreen> {
               color: _isAddFriend ? Colors.black : Colors.grey,
             ),
           ),
-          Switch(
-            value: _isAddFriend,
-            onChanged: _toggleAddFriend,
-            activeColor: Colors.black45,
+          Transform.scale(
+            scale: 0.8,
+            child: Switch(
+              value: _isAddFriend,
+              onChanged: _toggleAddFriend,
+              activeColor: Colors.black45,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // Reduces the tap target size
+            ),
           ),
         ],
       ),
@@ -45,6 +51,7 @@ class _SearchScreenState extends State<SearchScreen> {
       children: [
         _buildSearchBar(),
         SizedBox.fromSize(size: const Size.fromHeight(30)),
+        _buildListFriends(),
       ],
     );
   }
@@ -52,8 +59,9 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchBar() {
     return TextFormField(
       controller: _searchController,
+      onChanged: _handleSearching,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(15),
+        contentPadding: const EdgeInsets.all(15),
         suffixIcon: IconButton(
           onPressed: () {},
           icon: const Icon(Icons.search),
@@ -64,6 +72,17 @@ class _SearchScreenState extends State<SearchScreen> {
         labelText: 'Search',
       ),
     );
+  }
+
+  Widget _buildListFriends() {
+    return Center(
+      child: Text(_input),
+    );
+  }
+
+  void _handleSearching(String input) {
+    setState(() {
+    });
   }
 
   void _toggleAddFriend(bool value) {
