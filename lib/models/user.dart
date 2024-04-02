@@ -4,7 +4,7 @@ class UserModel {
   final String uuid;
   final String username;
   final String email;
-  final List<User> friends;
+  final List<String> friends;
 
   UserModel(
       {required this.uuid,

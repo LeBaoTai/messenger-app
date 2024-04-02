@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.home,
                 size: 30,
               ),
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => SearchScreen()));
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.search,
                 size: 30,
               ),
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => FriendsScreen()));
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.people,
                 size: 30,
               ),
@@ -92,9 +92,11 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text('Loading...');
         }
+
         final Map<String, dynamic> userData =
             snapshot.data?.data() as Map<String, dynamic>;
         final friendList = List.from(userData['listFriend']);
+
         return ListView(
           children:
               friendList.map((friend) => _buildFriendItem(friend)).toList(),

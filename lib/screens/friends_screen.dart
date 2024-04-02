@@ -12,7 +12,7 @@ class _GroupState extends State<FriendsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Groups'),
+        title: const Text('Friends'),
         backgroundColor: Colors.white,
         shadowColor: Colors.black,
         elevation: 4,
