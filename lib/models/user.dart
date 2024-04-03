@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
   final String uuid;
@@ -17,7 +16,7 @@ class UserModel {
       'uuid': uuid,
       'username': username,
       'email': email,
-      'listFriend': friends,
+      'listFriends': friends,
     };
   }
 
@@ -26,7 +25,7 @@ class UserModel {
       uuid: map['uuid'],
       username: map['username'],
       email: map['email'],
-      friends: map['friend']
+      friends: map['listFriends'],
     );
   }
 }

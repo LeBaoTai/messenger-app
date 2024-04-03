@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final UserAuthService _authService = UserAuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FriendsScreen()));
+                    MaterialPageRoute(builder: (context) => FriendsScreen(user: widget.user)));
               },
               icon: const Icon(
                 Icons.people,
@@ -80,11 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildUserList() {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.user.uid)
-          .snapshots(),
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text("Error");
@@ -92,14 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text('Loading...');
         }
-
-        final Map<String, dynamic> userData =
-            snapshot.data?.data() as Map<String, dynamic>;
-        final friendList = List.from(userData['listFriend']);
-
+        var currentDoc = snapshot.data!.docs.firstWhere((doc) => doc.id == widget.user.uid);
         return ListView(
           children:
-              friendList.map((friend) => _buildFriendItem(friend)).toList(),
+              snapshot.data!.docs.map((doc) => _buildUserItem(doc, currentDoc)).toList(),
         );
       },
     );
@@ -137,10 +131,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildUserItem(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+  Widget _buildUserItem(DocumentSnapshot doc, DocumentSnapshot currentDoc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
 
-    if (widget.user.email != data['email']) {
+    if (current['listFriends'].contains(data['uuid'])) {
       return Container(
         margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: ListTile(
@@ -171,6 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     }
-    return Container();
+    return SizedBox();
   }
 }
