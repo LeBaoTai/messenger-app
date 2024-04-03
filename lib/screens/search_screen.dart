@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:messenger_app/services/chat/add_friends.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key? key}) : super(key: key);
@@ -11,7 +13,10 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final User _current = FirebaseAuth.instance.currentUser!;
+
   final TextEditingController _searchController = TextEditingController();
+  final FriendService _friendService = FriendService();
   bool _isAddFriend = false;
   String _input = '';
 
@@ -78,12 +83,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildListFriends() {
-    return Center(
-      child: Text(_input),
-    );
-  }
-
   Widget _buildListFoundUsers() {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
@@ -120,10 +119,10 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           trailing: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.add,
-            ),
+            onPressed: () => _handleAddFriend(userData['uuid']),
+            icon: userData['uuid'] != _current.uid
+                ? const Icon(Icons.add)
+                : const Icon(Icons.info),
           ),
           title: Text(userData['username']),
           onTap: () {
@@ -139,6 +138,12 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       _input = input;
     });
+  }
+
+  void _handleAddFriend(String friendId) {
+    if(friendId != _current.uid) {
+      _friendService.addFriend(friendId);
+    }
   }
 
   void _toggleAddFriend(bool value) {
