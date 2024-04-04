@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String rePassword = _rePasswordController.text;
 
     if (password != rePassword) {
-      return 'Password doesn\'t macth!';
+      return 'Password doesn\'t match!';
     }
     return null;
   }

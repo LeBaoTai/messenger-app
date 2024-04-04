@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_app/services/friend/add_friends.dart';
 
 import 'chat_screen.dart';
 
@@ -15,6 +16,7 @@ class FriendsScreen extends StatefulWidget {
 
 class _GroupState extends State<FriendsScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FriendService _friendService = FriendService();
   bool _leftGes = true;
   bool _rightGes = false;
 
@@ -76,12 +78,18 @@ class _GroupState extends State<FriendsScreen> {
             decoration: BoxDecoration(
                 color: _rightGes ? Colors.grey : null,
                 borderRadius: BorderRadius.circular(20)),
-            child: const Text(
-              'Requests',
-              style: TextStyle(
-                fontSize: 19,
-                color: Colors.black,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Requests',
+                  style: TextStyle(
+                    fontSize: 19,
+                    color: Colors.black,
+                  ),
+                ),
+                _getNumberOfRequests(),
+              ],
             ),
           ),
           onTap: () {
@@ -166,11 +174,10 @@ class _GroupState extends State<FriendsScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    ChatScreen(
-                      receiverEmail: data['email'].toString(),
-                      receiverId: data['uuid'],
-                    ),
+                builder: (context) => ChatScreen(
+                  receiverName: data['username'].toString(),
+                  receiverId: data['uuid'],
+                ),
               ),
             );
           },
@@ -201,9 +208,18 @@ class _GroupState extends State<FriendsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.check),),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.delete),),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.info),),
+                IconButton(
+                  onPressed: () => _handleAccept(data['uuid']),
+                  icon: const Icon(Icons.check),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.delete),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.info),
+                ),
               ],
             ),
           ),
@@ -213,5 +229,40 @@ class _GroupState extends State<FriendsScreen> {
       );
     }
     return const SizedBox();
+  }
+
+  Widget _getNumberOfRequests() {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _firestore.collection('users').doc(widget.user.uid).snapshots(),
+      builder: (context, snapshot) {
+        if(snapshot.hasError) {
+          return const SizedBox();
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox();
+        } else {
+          var data = snapshot.data!.data() as Map<String, dynamic>;
+          var length = data['requests'].length;
+
+          return Container(
+            margin: EdgeInsets.only(left: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.red,
+            ),
+            child: Text(
+              '$length',
+              style: const TextStyle(
+                fontSize: 15,
+                color: Colors.yellow,
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  void _handleAccept(String friendId) {
+    _friendService.addFriend(friendId);
   }
 }

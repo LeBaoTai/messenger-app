@@ -126,7 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           trailing: IconButton(
             onPressed: () => _handleRequestFriend(userData['uuid']),
-            icon: _setIcon(userData['uuid'], current['pending']),
+            icon: _setIcon(userData['uuid'], current),
           ),
           title: Text(userData['username']),
           onTap: () {
@@ -138,10 +138,13 @@ class _SearchScreenState extends State<SearchScreen> {
     return const SizedBox();
   }
 
-  Widget _setIcon(String userId, List currentPending) {
-    if (userId != _current.uid && !currentPending.contains(userId)) {
+  Widget _setIcon(String userId, Map current) {
+    if (current['listFriends'].contains(userId)) {
+      return const Icon(Icons.info);
+    }
+    if (userId != _current.uid && !current['pending'].contains(userId)) {
       return const Icon(Icons.add);
-    } else if (userId != _current.uid && currentPending.contains(userId)) {
+    } else if (userId != _current.uid && current['pending'].contains(userId)) {
       return const Icon(Icons.send);
     } else {
       return const Icon(Icons.info);

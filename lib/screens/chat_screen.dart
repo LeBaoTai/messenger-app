@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:messenger_app/services/chat/chat_services.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String receiverEmail;
+  final String receiverName;
   final String receiverId;
   const ChatScreen(
-      {super.key, required this.receiverEmail, required this.receiverId});
+      {super.key, required this.receiverName, required this.receiverId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.receiverEmail,
+          widget.receiverName,
         ),
         backgroundColor: Colors.grey[300],
         elevation: 10,

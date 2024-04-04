@@ -16,6 +16,10 @@ class FriendService {
         'listFriends': FieldValue.arrayUnion([userId])
       });
 
+      await _firestore.collection('users').doc(userId).update({
+        'requests': FieldValue.arrayRemove([friendId])
+      });
+
       await _firestore.collection('users').doc(friendId).update({
         'pending': FieldValue.arrayRemove([userId])
       });

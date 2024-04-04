@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => ChatScreen(
-                receiverEmail: friend.email.toString(),
+                receiverName: friend.displayName.toString(),
                 receiverId: friend.uid,
               ),
             ),
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => ChatScreen(
-                  receiverEmail: data['email'].toString(),
+                  receiverName: data['username'].toString(),
                   receiverId: data['uuid'],
                 ),
               ),
