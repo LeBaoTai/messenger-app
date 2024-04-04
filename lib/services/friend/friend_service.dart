@@ -43,4 +43,20 @@ class FriendService {
       print(e);
     }
   }
+
+  Future<void> deniRequest(String requestId) async {
+    String userId = _auth.currentUser!.uid;
+
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'requests': FieldValue.arrayRemove([requestId])
+      });
+
+      await _firestore.collection('users').doc(requestId).update({
+        'pending': FieldValue.arrayRemove([userId])
+      });
+    } catch(e) {
+      print(e);
+    }
+  }
 }

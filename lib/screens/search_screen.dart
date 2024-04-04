@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:messenger_app/services/friend/add_friends.dart';
+import 'package:messenger_app/services/friend/friend_service.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key? key}) : super(key: key);

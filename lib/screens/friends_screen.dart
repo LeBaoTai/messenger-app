@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_app/services/friend/add_friends.dart';
+import 'package:messenger_app/services/friend/friend_service.dart';
 
 import 'chat_screen.dart';
 
@@ -213,7 +213,7 @@ class _GroupState extends State<FriendsScreen> {
                   icon: const Icon(Icons.check),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () => _handleDeni(data['uuid']),
                   icon: const Icon(Icons.delete),
                 ),
                 IconButton(
@@ -264,5 +264,9 @@ class _GroupState extends State<FriendsScreen> {
 
   void _handleAccept(String friendId) {
     _friendService.addFriend(friendId);
+  }
+
+  void _handleDeni(String friendId) {
+    _friendService.deniRequest(friendId);
   }
 }
