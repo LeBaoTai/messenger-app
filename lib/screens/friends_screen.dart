@@ -116,8 +116,26 @@ class _GroupState extends State<FriendsScreen> {
           );
         },
       );
-    } else if(_rightGes) {
-      return Container();
+    } else if (_rightGes) {
+      return StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Text("Error");
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text('Loading...');
+          }
+          var currentDoc = snapshot.data!.docs
+              .firstWhere((doc) => doc.id == widget.user.uid);
+          return ListView(
+            shrinkWrap: true,
+            children: snapshot.data!.docs
+                .map((doc) => _requestItem(doc, currentDoc))
+                .toList(),
+          );
+        },
+      );
     } else {
       return Container();
     }
@@ -148,16 +166,52 @@ class _GroupState extends State<FriendsScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatScreen(
-                  receiverEmail: data['email'].toString(),
-                  receiverId: data['uuid'],
-                ),
+                builder: (context) =>
+                    ChatScreen(
+                      receiverEmail: data['email'].toString(),
+                      receiverId: data['uuid'],
+                    ),
               ),
             );
           },
         ),
       );
     }
-    return SizedBox();
+    return const SizedBox();
+  }
+
+  Widget _requestItem(DocumentSnapshot doc, DocumentSnapshot currentDoc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
+
+    if (current['requests'].contains(data['uuid'])) {
+      return Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 5),
+        child: ListTile(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.asset(
+              'assets/home/user.png',
+              width: 35,
+              height: 35,
+            ),
+          ),
+          trailing: SizedBox(
+            width: 150,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(onPressed: () {}, icon: const Icon(Icons.check),),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.delete),),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.info),),
+              ],
+            ),
+          ),
+          title: Text(data['username']),
+          onTap: () {},
+        ),
+      );
+    }
+    return const SizedBox();
   }
 }

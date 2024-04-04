@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:messenger_app/services/chat/add_friends.dart';
+import 'package:messenger_app/services/friend/add_friends.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key? key}) : super(key: key);
@@ -96,19 +96,25 @@ class _SearchScreenState extends State<SearchScreen> {
           return const Text('Waiting...');
         }
         final userData = snapshot.data!.docs;
+        final currentDoc =
+            snapshot.data!.docs.firstWhere((doc) => doc.id == _current.uid);
         return ListView(
             shrinkWrap: true,
-            children: userData.map((doc) => _buildUserItem(doc)).toList());
+            children: userData
+                .map((doc) => _buildUserItem(doc, currentDoc))
+                .toList());
       },
     );
   }
 
-  Widget _buildUserItem(DocumentSnapshot doc) {
+  Widget _buildUserItem(DocumentSnapshot doc, DocumentSnapshot currentDoc) {
     Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
+    Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
+
     if (userData['username'].toString().toLowerCase().contains(_input) &&
         _input.isNotEmpty) {
       return Container(
-        margin: EdgeInsets.only(bottom: 15),
+        margin: const EdgeInsets.only(bottom: 15),
         child: ListTile(
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -119,10 +125,8 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           trailing: IconButton(
-            onPressed: () => _handleAddFriend(userData['uuid']),
-            icon: userData['uuid'] != _current.uid
-                ? const Icon(Icons.add)
-                : const Icon(Icons.info),
+            onPressed: () => _handleRequestFriend(userData['uuid']),
+            icon: _setIcon(userData['uuid'], current['pending']),
           ),
           title: Text(userData['username']),
           onTap: () {
@@ -134,15 +138,25 @@ class _SearchScreenState extends State<SearchScreen> {
     return const SizedBox();
   }
 
+  Widget _setIcon(String userId, List currentPending) {
+    if (userId != _current.uid && !currentPending.contains(userId)) {
+      return const Icon(Icons.add);
+    } else if (userId != _current.uid && currentPending.contains(userId)) {
+      return const Icon(Icons.send);
+    } else {
+      return const Icon(Icons.info);
+    }
+  }
+
   void _handleSearching(String input) {
     setState(() {
       _input = input;
     });
   }
 
-  void _handleAddFriend(String friendId) {
-    if(friendId != _current.uid) {
-      _friendService.addFriend(friendId);
+  void _handleRequestFriend(String friendId) {
+    if (friendId != _current.uid) {
+      _friendService.pendingRequest(friendId);
     }
   }
 

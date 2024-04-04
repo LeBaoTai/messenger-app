@@ -15,6 +15,26 @@ class FriendService {
       await _firestore.collection('users').doc(friendId).update({
         'listFriends': FieldValue.arrayUnion([userId])
       });
+
+      await _firestore.collection('users').doc(friendId).update({
+        'pending': FieldValue.arrayRemove([userId])
+      });
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  Future<void> pendingRequest(String requestId) async {
+    String userId = _auth.currentUser!.uid;
+
+    try {
+      await _firestore.collection('users').doc(requestId).update({
+        'requests': FieldValue.arrayUnion([userId])
+      });
+
+      await _firestore.collection('users').doc(userId).update({
+        'pending': FieldValue.arrayUnion([requestId])
+      });
     } catch(e) {
       print(e);
     }
