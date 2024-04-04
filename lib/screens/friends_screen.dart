@@ -244,7 +244,7 @@ class _GroupState extends State<FriendsScreen> {
           var length = data['requests'].length;
 
           return Container(
-            margin: EdgeInsets.only(left: 10),
+            margin: const EdgeInsets.only(left: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: Colors.red,

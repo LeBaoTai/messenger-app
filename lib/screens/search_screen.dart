@@ -88,6 +88,7 @@ class _SearchScreenState extends State<SearchScreen> {
       stream: FirebaseFirestore.instance
           .collection('users')
           .orderBy('username')
+          .limit(15)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
