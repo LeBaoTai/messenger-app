@@ -53,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildChatMessageList() {
     return StreamBuilder(
       stream:
-          _chatService.getMessage(widget.receiverId, _auth.currentUser!.uid),
+          _chatService.getMessage(_auth.currentUser!.uid, widget.receiverId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text('Something wrong!!!');
@@ -97,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ? CrossAxisAlignment.end
                 : CrossAxisAlignment.start,
             children: [
-              Text(data['senderEmail']),
+              Text(data['senderName']),
               Text(
                 data['message'],
                 style: const TextStyle(

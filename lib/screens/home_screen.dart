@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_app/screens/chat_screen.dart';
 import 'package:messenger_app/screens/friends_screen.dart';
@@ -90,10 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Text('Loading...');
         }
-        var currentDoc = snapshot.data!.docs.firstWhere((doc) => doc.id == widget.user.uid);
+        var currentDoc = snapshot.data!.docs
+            .firstWhere((doc) => doc.id == widget.user.uid);
         return ListView(
-          children:
-              snapshot.data!.docs.map((doc) => _buildUserItem(doc, currentDoc)).toList(),
+          shrinkWrap: true,
+          children: snapshot.data!.docs
+              .map((doc) => _buildUserItem(doc, currentDoc))
+              .toList(),
         );
       },
     );
@@ -135,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
 
-    if (current['listFriends'].contains(data['uuid'])) {
+    if (current['current_chats'].contains(data['uuid'])) {
       return Container(
         margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: ListTile(

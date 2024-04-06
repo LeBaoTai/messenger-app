@@ -9,24 +9,34 @@ class ChatService {
   Future<void> sendMessage(String receiverId, String message) async {
     // get current user
     final String currentUserId = _auth.currentUser!.uid.toString();
-    final String currentUserEmail = _auth.currentUser!.email.toString();
+    final String currentUserName = _auth.currentUser!.displayName.toString();
     final Timestamp timestamp = Timestamp.now();
+
+    // insert user when send first message
+    await _fireStore.collection('users').doc(currentUserId).update({
+      'current_chats': FieldValue.arrayUnion([receiverId])
+    });
+
+    await _fireStore.collection('users').doc(receiverId).update({
+      'current_chats': FieldValue.arrayUnion([currentUserId])
+    });
 
     MessageModel newMessage = MessageModel(
         senderId: currentUserId,
+        senderName: currentUserName,
         receiverId: receiverId,
-        senderEmail: currentUserEmail,
         message: message,
         timestamp: timestamp);
 
-    List<String> ids = [currentUserId, receiverId];
+    List ids = [currentUserId, receiverId];
     ids.sort();
+
     String chatRoomId = ids.join('_');
 
     await _fireStore
         .collection('chat_rooms')
         .doc(chatRoomId)
-        .collection('message')
+        .collection('messages')
         .add(newMessage.toMap());
   }
 
@@ -39,7 +49,7 @@ class ChatService {
     return _fireStore
         .collection('chat_rooms')
         .doc(chatRoomId)
-        .collection('message')
+        .collection('messages')
         .orderBy('timestamp', descending: false)
         .snapshots();
   }
