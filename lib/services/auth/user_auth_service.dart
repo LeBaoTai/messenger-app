@@ -32,7 +32,7 @@ class UserAuthService {
       await credential.user!.reload();
       await signUpAuth.signOut();
 
-      UserModel newUser = UserModel(uuid: credential.user!.uid, username: username, email: email, friends: []);
+      UserModel newUser = UserModel(uuid: credential.user!.uid, username: username, email: email, friends: [], pending: [], requests: [], currentChats: []);
       FirebaseFirestore.instance.collection('users').doc(credential.user?.uid).set(newUser.toMap());
 
       return 'Success.';

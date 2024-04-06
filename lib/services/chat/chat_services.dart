@@ -12,13 +12,48 @@ class ChatService {
     final String currentUserName = _auth.currentUser!.displayName.toString();
     final Timestamp timestamp = Timestamp.now();
 
+
     // insert user when send first message
+    DocumentSnapshot userDocSend = await _fireStore.collection('users').doc(currentUserId).get();
+    Map<String, dynamic> userDataSend = userDocSend.data() as Map<String, dynamic>;
+    List chatIdListSend = userDataSend['current_chats'];
+
+    if (chatIdListSend.contains(receiverId)) {
+      chatIdListSend.remove(receiverId);
+      chatIdListSend.add(receiverId);
+      chatIdListSend.reversed;
+    } else {
+      chatIdListSend.add(receiverId);
+      chatIdListSend.reversed;
+    }
+
+    DocumentSnapshot userDocRec = await _fireStore.collection('users').doc(receiverId).get();
+    Map<String, dynamic> userDataRec = userDocRec.data() as Map<String, dynamic>;
+    List chatIdListRec = userDataRec['current_chats'];
+
+    if (chatIdListRec.contains(currentUserId)) {
+      chatIdListRec.remove(currentUserId);
+      chatIdListRec.add(currentUserId);
+      chatIdListRec.reversed;
+    } else {
+      chatIdListRec.add(currentUserId);
+      chatIdListRec.reversed;
+    }
+
     await _fireStore.collection('users').doc(currentUserId).update({
-      'current_chats': FieldValue.arrayUnion([receiverId])
+      'current_chats': FieldValue.delete()
+    });
+
+    await _fireStore.collection('users').doc(currentUserId).update({
+      'current_chats': FieldValue.arrayUnion(chatIdListSend)
     });
 
     await _fireStore.collection('users').doc(receiverId).update({
-      'current_chats': FieldValue.arrayUnion([currentUserId])
+      'current_chats': FieldValue.delete(),
+    });
+
+    await _fireStore.collection('users').doc(receiverId).update({
+      'current_chats': FieldValue.arrayUnion(chatIdListRec),
     });
 
     MessageModel newMessage = MessageModel(

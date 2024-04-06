@@ -153,7 +153,7 @@ class _GroupState extends State<FriendsScreen> {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
 
-    if (current['listFriends'].contains(data['uuid'])) {
+    if (current['list_friends'].contains(data['uuid'])) {
       return Container(
         margin: const EdgeInsets.only(top: 10, bottom: 5),
         child: ListTile(

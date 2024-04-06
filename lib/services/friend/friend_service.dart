@@ -9,11 +9,11 @@ class FriendService {
     String userId = _auth.currentUser!.uid;
     try {
       await _firestore.collection('users').doc(userId).update({
-      'listFriends': FieldValue.arrayUnion([friendId])
+        'list_friends': FieldValue.arrayUnion([friendId])
       });
 
       await _firestore.collection('users').doc(friendId).update({
-        'listFriends': FieldValue.arrayUnion([userId])
+        'list_friends': FieldValue.arrayUnion([userId])
       });
 
       await _firestore.collection('users').doc(userId).update({

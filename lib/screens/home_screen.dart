@@ -18,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final UserAuthService _authService = UserAuthService();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUserList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('users').snapshots(),
+      stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Text("Error");
@@ -93,53 +92,22 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         var currentDoc = snapshot.data!.docs
             .firstWhere((doc) => doc.id == widget.user.uid);
+        Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
+        List currentChats = current['current_chats'];
+
         return ListView(
           shrinkWrap: true,
           children: snapshot.data!.docs
-              .map((doc) => _buildUserItem(doc, currentDoc))
+              .map((doc) => _buildUserItem(doc, currentChats))
               .toList(),
         );
       },
     );
   }
 
-  Widget _buildFriendItem(User friend) {
-    return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 5),
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.asset(
-            'assets/home/user.png',
-            width: 35,
-            height: 35,
-          ),
-        ),
-        trailing: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.more_vert),
-        ),
-        title: Text(friend.displayName!),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatScreen(
-                receiverName: friend.displayName.toString(),
-                receiverId: friend.uid,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildUserItem(DocumentSnapshot doc, DocumentSnapshot currentDoc) {
+  Widget _buildUserItem(DocumentSnapshot doc, List currentChat) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    Map<String, dynamic> current = currentDoc.data() as Map<String, dynamic>;
-
-    if (current['current_chats'].contains(data['uuid'])) {
+    if (currentChat.contains(data['uuid'])) {
       return Container(
         margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: ListTile(
@@ -160,16 +128,17 @@ class _HomeScreenState extends State<HomeScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatScreen(
-                  receiverName: data['username'].toString(),
-                  receiverId: data['uuid'],
-                ),
+                builder: (context) =>
+                    ChatScreen(
+                      receiverName: data['username'].toString(),
+                      receiverId: data['uuid'],
+                    ),
               ),
             );
           },
         ),
       );
     }
-    return SizedBox();
+    return const SizedBox();
   }
 }

@@ -140,7 +140,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _setIcon(String userId, Map current) {
-    if (current['listFriends'].contains(userId)) {
+    if (current['list_friends'].contains(userId)) {
       return const Icon(Icons.info);
     }
     if (userId != _current.uid && !current['pending'].contains(userId)) {
